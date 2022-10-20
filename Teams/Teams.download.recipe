@@ -25,11 +25,20 @@
     <array>
         <dict>
             <key>Processor</key>
+            <string>TeamsURLProvider</string>
+            <key>Arguments</key>
+            <dict />
+        </dict>
+
+        <dict>
+            <key>Processor</key>
             <string>URLDownloader</string>
             <key>Arguments</key>
             <dict>
                 <key>url</key>
-                <string>%DOWNLOAD_URL%</string>
+                <string>%download_url%</string>
+                <key>filename</key>
+                <string>Teams_macOS.%download_version%.universal.pkg</string>
             </dict>
         </dict>
         <dict>
