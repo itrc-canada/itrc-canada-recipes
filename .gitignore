@@ -3,7 +3,10 @@
 
 # Custom Extras
 Teams.download.og.recipe
+<<<<<<< HEAD
 Shared/
+=======
+>>>>>>> 4d327fd (Audacity has switched to multi-architecture for macOS, universal recipes no longer work and will be removed in a future commit.)
 
 ### macOS ###
 # General
