@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,python
 
+# Custom Extras
+Teams.download.og.recipe
+
 ### macOS ###
 # General
 .DS_Store

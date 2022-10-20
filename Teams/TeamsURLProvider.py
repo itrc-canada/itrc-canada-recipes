@@ -15,6 +15,8 @@ from autopkglib.URLGetter import URLGetter
 
 __all__ = ["TeamsURLProvider"]
 
+# Leverages repo: https://github.com/ItzLevvie/MicrosoftTeams-msinternal
+# Which seems to be frequently updated.
 GITHUB_MSINTERNAL_URL = "https://raw.githubusercontent.com/ItzLevvie/MicrosoftTeams-msinternal/master/defconfig"
 OS_STR = "(osx-x64 + osx-arm64)"
 RE_OS_STR = OS_STR.replace("(", "\(").replace(")", "\)")
