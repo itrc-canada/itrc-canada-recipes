@@ -105,3 +105,4 @@ class TeamsURLProvider(URLGetter):
 if __name__ == "__main__":
     PROCESSOR = TeamsURLProvider()
     PROCESSOR.execute_shell()
+    
