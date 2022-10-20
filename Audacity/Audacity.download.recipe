@@ -3,13 +3,15 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the latest build of Microsoft Teams</string>
+    <string>Downloads the latest build of Audacity for the specified architecture.</string>
     <key>Identifier</key>
-    <string>com.github.itrc-canada.download.msteams</string>
+    <string>com.github.itrc-canada.download.audacity</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
-        <string>Microsoft Teams</string>
+        <string>Audacity</string>
+        <key>ARCHITECTURE</key>
+        <string />
     </dict>
     <key>MinimumVersion</key>
     <string>2.3</string>
@@ -17,20 +19,24 @@
     <array>
         <dict>
             <key>Processor</key>
-            <string>TeamsURLProvider</string>
+            <string>GitHubReleasesInfoProvider</string>
             <key>Arguments</key>
-            <dict />
+            <dict>
+                <key>asset_regex</key>
+                <string>audacity-macOS-\d.*-%ARCHITECTURE%\.dmg</string>
+                <key>github_repo</key>
+                <string>audacity/audacity</string>
+                <key>include_preleases</key>
+                <false />
+            </dict>
         </dict>
-
         <dict>
             <key>Processor</key>
             <string>URLDownloader</string>
             <key>Arguments</key>
             <dict>
                 <key>url</key>
-                <string>%download_url%</string>
-                <key>filename</key>
-                <string>Teams_macOS.%download_version%.universal.pkg</string>
+                <string>%url%</string>
             </dict>
         </dict>
         <dict>
@@ -44,12 +50,8 @@
             <dict>
                 <key>input_path</key>
                 <string>%pathname%</string>
-                <key>expected_authority_names</key>
-                <array>
-                    <string>Developer ID Installer: Microsoft Corporation (UBF8T346G9)</string>
-                    <string>Developer ID Certification Authority</string>
-                    <string>Apple Root CA</string>
-                </array>
+                <key>requirement</key>
+                <string>identifier "org.audacityteam.audacity" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = AWEYX923UX</string>
             </dict>
         </dict>
     </array>
