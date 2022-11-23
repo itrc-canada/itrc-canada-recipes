@@ -5,12 +5,7 @@
     <key>Description</key>
     <string>Downloads and imports the latest Intel (x86_64) Audacity build.</string>
     <key>Identifier</key>
-<<<<<<< HEAD
     <string>com.github.itrc-canada.munki.x86_64.audacity</string> 
-=======
-    <string>com.github.itrc-canada.munki.x86_64.audacity</string>
-    
->>>>>>> 4d327fd (Audacity has switched to multi-architecture for macOS, universal recipes no longer work and will be removed in a future commit.)
     <key>Input</key>
     <dict>
         <key>MUNKI_REPO_SUBDIR</key>

@@ -6,10 +6,6 @@
     <string>Downloads and imports the latest arm64 Audacity build.</string>
     <key>Identifier</key>
     <string>com.github.itrc-canada.munki.arm64.audacity</string>
-<<<<<<< HEAD
-=======
-    
->>>>>>> 4d327fd (Audacity has switched to multi-architecture for macOS, universal recipes no longer work and will be removed in a future commit.)
     <key>Input</key>
     <dict>
         <key>MUNKI_REPO_SUBDIR</key>
