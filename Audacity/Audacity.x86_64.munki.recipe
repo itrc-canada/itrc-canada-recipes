@@ -9,7 +9,7 @@
     <key>Input</key>
     <dict>
         <key>MUNKI_REPO_SUBDIR</key>
-        <string>apps/x86_64/audacity</string>
+        <string>apps/audacity/x86_64</string>
         <key>pkginfo</key>
         <dict>
             <key>catalogs</key>
