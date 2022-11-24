@@ -12,6 +12,8 @@
         <string>Audacity</string>
         <key>ARCHITECTURE</key>
         <string />
+        <key>REGEX</key>
+        <string>audacity-macOS-\d.*-%ARCHITECTURE%\.dmg</string>
     </dict>
     <key>MinimumVersion</key>
     <string>2.3</string>
@@ -23,7 +25,7 @@
             <key>Arguments</key>
             <dict>
                 <key>asset_regex</key>
-                <string>audacity-macOS-\d.*-%ARCHITECTURE%\.dmg</string>
+                <string>%REGEX%</string>
                 <key>github_repo</key>
                 <string>audacity/audacity</string>
                 <key>include_preleases</key>
