@@ -21,7 +21,6 @@
             <key>Arguments</key>
             <dict />
         </dict>
-
         <dict>
             <key>Processor</key>
             <string>URLDownloader</string>
@@ -30,7 +29,7 @@
                 <key>url</key>
                 <string>%download_url%</string>
                 <key>filename</key>
-                <string>Teams_macOS.%download_version%.universal.pkg</string>
+                <string>Teams_macOS.%ms_version%.universal.pkg</string>
             </dict>
         </dict>
         <dict>

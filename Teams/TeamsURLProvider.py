@@ -30,10 +30,13 @@ class TeamsURLProvider(URLGetter):
     input_variables = {}
     output_variables = {
         "download_url": {
-            "description": "URL for downloading the latest version of jre/jdk"
+            "description": "URL for downloading the latest version of Microsoft Teams"
         },
         "download_version": {
-            "description": "Version of jre/jdk to from the download_url"
+            "description": "Version of Microsoft Teams to from the download_url"
+        },
+        "ms_version": {
+            "description": "Microsoft Teams presents it's version differently from what it actually is. This converts 1.5.00.$BUILDNO to 1.00.5$BUILDNO"
         }
     }
 
@@ -69,7 +72,7 @@ class TeamsURLProvider(URLGetter):
             return ProcessorError("Unable to parse production url.")
         else:
             self.env["download_url"] = prodURL
-        self.output("Found production download url for Mac.")
+            self.output("Found production download url for Mac.")
 
         prodVersion = prodLine.split(" ")[0]
         if prodVersion is None:
@@ -78,6 +81,8 @@ class TeamsURLProvider(URLGetter):
         else: 
             self.env["download_version"] = prodVersion
             self.output("Found production version.")
+            raw_version = prodVersion
+            ms_version_split = prodVersion.split(".")
 
         self.output("Determined version of %s @ %s" % (prodVersion, prodURL))
         print("Determined version of %s @ %s" % (prodVersion, prodURL))
