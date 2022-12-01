@@ -83,6 +83,8 @@ class TeamsURLProvider(URLGetter):
             self.output("Found production version.")
             raw_version = prodVersion
             ms_version_split = prodVersion.split(".")
+            ms_version = ms_version_split[0]+"."+ms_version_split[2]+"."+ms_version_split[1]+ms_version_split[3]
+            self.env["ms_version"] = ms_version
 
         self.output("Determined version of %s @ %s" % (prodVersion, prodURL))
         print("Determined version of %s @ %s" % (prodVersion, prodURL))
