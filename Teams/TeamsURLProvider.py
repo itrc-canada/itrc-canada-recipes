@@ -20,7 +20,8 @@ __all__ = ["TeamsURLProvider"]
 GITHUB_MSINTERNAL_URL = "https://raw.githubusercontent.com/ItzLevvie/MicrosoftTeams-msinternal/master/defconfig"
 OS_STR = "(osx-x64 + osx-arm64)"
 RE_OS_STR = OS_STR.replace("(", "\(").replace(")", "\)")
-RE_EXTRACT_PROD_STRS = "(?<=URLs for the latest production build of Microsoft Teams:)(?:\n.*){9}" # Needs some tweaking, this assumes always 9 lines.
+# RE_EXTRACT_PROD_STRS = "(?<=URLs for the latest production build of Microsoft Teams:)(?:\n.*){9}" # Needs some tweaking, this assumes always 9 lines.
+RE_EXTRACT_PROD_STRS = "(?<=URLs for the latest production build of Microsoft Teams:)(?:\n.*)" # Needs some tweaking, this assumes always 9 lines.
 RE_EXTRACT_PROD_LINE = "(.*)%s(.*)" % OS_STR
 RE_EXTRACT_URL = r"((?<=:\ ).+)"
 
@@ -47,12 +48,16 @@ class TeamsURLProvider(URLGetter):
 
         }
         defconfig = self.download(GITHUB_MSINTERNAL_URL, headers, text=True)
-
         # Pull block of "production" strings
         prodBlock = re.findall(
             re.compile(RE_EXTRACT_PROD_STRS),
             defconfig
-        )[0].splitlines()
+        )
+        #[0].splitlines()
+        print("%s" % prodBlock)
+        return
+
+        
         if prodBlock is None:
             return ProcessorError("Unable to parse production block.")
         self.output("Found production block.")
@@ -63,7 +68,7 @@ class TeamsURLProvider(URLGetter):
 
         prodLine = prodBlock[prodIndex]
         self.output("Parsing production line @%s from block." % prodIndex)
-
+    
         prodURL = re.search(
             RE_EXTRACT_URL,
             prodLine
