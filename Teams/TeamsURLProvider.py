@@ -9,20 +9,17 @@
 #
 #
 import re
-
 from autopkglib import ProcessorError
 from autopkglib.URLGetter import URLGetter
 
 __all__ = ["TeamsURLProvider"]
 
 # Leverages repo: https://github.com/ItzLevvie/MicrosoftTeams-msinternal
-# Which seems to be frequently updated.
+# This seems to be frequently updated and well maintained.
 GITHUB_MSINTERNAL_URL = "https://raw.githubusercontent.com/ItzLevvie/MicrosoftTeams-msinternal/master/defconfig"
 OS_STR = "(osx-x64 + osx-arm64)"
-RE_OS_STR = OS_STR.replace("(", "\(").replace(")", "\)")
-RE_EXTRACT_PROD_STRS = "(?<=URLs for the latest production build of Microsoft Teams:)(?:\n.*){9}" # Needs some tweaking, this assumes always 9 lines.
-RE_EXTRACT_PROD_LINE = "(.*)%s(.*)" % OS_STR
-RE_EXTRACT_URL = r"((?<=:\ ).+)"
+MS_STRING_TARGET = "URLs for the latest production build of Microsoft Teams:"
+RE_EXTRACT_URL = r'https?://\S+'
 
 class TeamsURLProvider(URLGetter):
     description= __doc__
@@ -30,77 +27,65 @@ class TeamsURLProvider(URLGetter):
     input_variables = {}
     output_variables = {
         "download_url": {
-            "description": "URL for downloading the latest version of jre/jdk"
+            "description": "URL for downloading the latest version of Microsoft Teams"
         },
         "download_version": {
-            "description": "Version of jre/jdk to from the download_url"
+            "description": "Version of Microsoft Teams to from the download_url"
         }
     }
 
     """ Pull information file, and extract relevant data """
-    def getDownloadURL(self):
+    def getDownloadInfo(self):
         self.output("Retrieve 'defconfig' from GITHUB")
         headers = {
 
         }
         defconfig = self.download(GITHUB_MSINTERNAL_URL, headers, text=True)
-
-        # Pull block of "production" strings
-        prodBlock = re.findall(
-            re.compile(RE_EXTRACT_PROD_STRS),
-            defconfig
-        )[0].splitlines()
-        if prodBlock is None:
-            return ProcessorError("Unable to parse production block.")
-        self.output("Found production block.")
-
-        prodIndex = self._indexSubstring(prodBlock)
-        if prodIndex is None:
-            return ProcessorError("Unable to parse production index.")
-
-        prodLine = prodBlock[prodIndex]
-        self.output("Parsing production line @%s from block." % prodIndex)
-
-        prodURL = re.search(
-            RE_EXTRACT_URL,
-            prodLine
-        )[0]
-        if prodURL is None:
-            return ProcessorError("Unable to parse production url.")
+        # # Pull block of "production" strings
+        defconfig_split = str.splitlines(defconfig)
+        line_index = -1
+        for l in range(len(defconfig_split)):
+            if defconfig_split[l] == MS_STRING_TARGET:
+                line_index = l
+                break
+        
+        if line_index < 0:
+            return ProcessorError("Unable to locate prod block location")
         else:
-            self.env["download_url"] = prodURL
-        self.output("Found production download url for Mac.")
+            prod_block = defconfig_split[line_index+1:]
+            self.output("Found production block: %s" % prod_block)
 
-        prodVersion = prodLine.split(" ")[0]
-        if prodVersion is None:
-            self.output("Unable to extract version. Submitting -1")
-            self.env["download_version"] = -1
-        else: 
-            self.env["download_version"] = prodVersion
-            self.output("Found production version.")
+        for item in prod_block:
+            if OS_STR in item:
+                prod_string = item
+                self.output("Found production version for macOS: %s" % prod_string)
+                break
 
-        self.output("Determined version of %s @ %s" % (prodVersion, prodURL))
-        print("Determined version of %s @ %s" % (prodVersion, prodURL))
+        # Get and Set prod_url from prod_string
+        prod_url_search = re.compile(RE_EXTRACT_URL).findall(prod_string)
+        if prod_url_search:
+            prod_url = prod_url_search[0]
+            self.env["download_url"] = prod_url
+        else:
+           return ProcessorError("Unable to extract 'download_url'")
+        
+        # Get and Set prod_ver from prod_string
+        prod_ver = prod_string.split(" ")[0]
+        if prod_ver:
+            self.env["download_version"] = prod_ver
+        else:
+            return ProcessorError("Unable to extract 'download_version'")
 
-
-    """ Scrape through production block to locate OS_STR in entry"""
-    def _indexSubstring(self, thelist):
-        self.output("Determining the correct production line.")
-        for i, s in enumerate(thelist):
-            macEntry = OS_STR in s
-            if macEntry:
-                return i
-        return -1
-
+        # Output details
+        self.output("Determined version of %s @ %s" % (prod_ver, prod_url))
     
     def main(self):
         try:
             self.output("Starting...")
-            self.getDownloadURL()
+            self.getDownloadInfo()
         except Exception as err:
             raise ProcessorError(err)
         self.output("Complete. Bye!")
-
 
 if __name__ == "__main__":
     PROCESSOR = TeamsURLProvider()

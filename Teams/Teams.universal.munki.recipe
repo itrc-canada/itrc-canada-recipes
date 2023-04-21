@@ -43,6 +43,14 @@
     <string>com.github.itrc-canada.download.universal.msteams</string>
     <key>Process</key>
     <array>
+        <!-- <dict>
+            <key>Processor</key>
+            <string>MunkiInstallsItemsCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>faux_root</key>
+            </dict>
+        </dict> -->
         <dict>
             <key>Arguments</key>
             <dict>
