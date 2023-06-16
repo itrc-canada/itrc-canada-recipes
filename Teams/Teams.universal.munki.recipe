@@ -43,14 +43,19 @@
     <string>com.github.itrc-canada.download.universal.msteams</string>
     <key>Process</key>
     <array>
-        <!-- <dict>
+        <dict>
             <key>Processor</key>
             <string>MunkiInstallsItemsCreator</string>
             <key>Arguments</key>
             <dict>
+                <key>installs_item_paths</key>
+                <array>
+                    <string>/Applications/Microsoft Teams.app</string>
+                </array>
                 <key>faux_root</key>
+                <string>%RECIPE_CACHE_DIR%/%NAME%</string>
             </dict>
-        </dict> -->
+        </dict>
         <dict>
             <key>Arguments</key>
             <dict>
