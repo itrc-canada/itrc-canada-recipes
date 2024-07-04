@@ -16,10 +16,12 @@ __all__ = ["TeamsURLProvider"]
 
 # Leverages repo: https://github.com/ItzLevvie/MicrosoftTeams-msinternal
 # This seems to be frequently updated and well maintained.
-GITHUB_MSINTERNAL_URL = "https://raw.githubusercontent.com/ItzLevvie/MicrosoftTeams-msinternal/master/defconfig"
+GITHUB_MSINTERNAL_URL = "https://raw.githubusercontent.com/ItzLevvie/MicrosoftTeams-msinternal/master/defconfig2"
 OS_STR = "(osx-x64 + osx-arm64)"
-MS_STRING_TARGET = "URLs for the latest production build of Microsoft Teams:"
-RE_EXTRACT_URL = r'https?://\S+'
+MS_END_DELIMITER = "————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————"
+MS_STRING_TARGET = "URLs for the latest Public (R4) build of Microsoft Teams:"
+RE_EXTRACT_URL = r'https?://\S.*/production-osx/\d*\.?\d*\.?\d*\.?\d*\.?/.*\.pkg'
+RE_EXTRACT_VER = r'(?<=\/)(\d*\.?\d*\.?\d*\.?\d*\.\d*)'
 
 class TeamsURLProvider(URLGetter):
     description= __doc__
@@ -36,12 +38,10 @@ class TeamsURLProvider(URLGetter):
 
     """ Pull information file, and extract relevant data """
     def getDownloadInfo(self):
-        self.output("Retrieve 'defconfig' from GITHUB")
-        headers = {
-
-        }
+        self.output("Retrieve 'defconfig2' from GITHUB")
+        headers = { }
         defconfig = self.download(GITHUB_MSINTERNAL_URL, headers, text=True)
-        # # Pull block of "production" strings
+        # Pull block of "production" strings, then find start line for MS_STRING_TARGET
         defconfig_split = str.splitlines(defconfig)
         line_index = -1
         for l in range(len(defconfig_split)):
@@ -53,13 +53,21 @@ class TeamsURLProvider(URLGetter):
             return ProcessorError("Unable to locate prod block location")
         else:
             prod_block = defconfig_split[line_index+1:]
-            self.output("Found production block: %s" % prod_block)
 
+        # Get all available versions. New regex limits it to /production-osx/ urls and .pkg files
+        prod_items = []
         for item in prod_block:
-            if OS_STR in item:
-                prod_string = item
-                self.output("Found production version for macOS: %s" % prod_string)
+            if MS_END_DELIMITER in item:
+                # Discard extra data after the end of the block
                 break
+            elif OS_STR in item:
+                # Add items that match our OS_STR
+                prod_items.append(item)
+
+        # Take the last entry as it will be the latest
+        prod_string = prod_items[len(prod_items)-1]
+        self.output("Found %s versions" % (len(prod_items)+1))
+        self.output("Final entry is: %s" % prod_string)
 
         # Get and Set prod_url from prod_string
         prod_url_search = re.compile(RE_EXTRACT_URL).findall(prod_string)
@@ -70,9 +78,9 @@ class TeamsURLProvider(URLGetter):
            return ProcessorError("Unable to extract 'download_url'")
         
         # Get and Set prod_ver from prod_string
-        prod_ver = prod_string.split(" ")[0]
+        prod_ver = re.compile(RE_EXTRACT_VER).findall(prod_string)
         if prod_ver:
-            self.env["download_version"] = prod_ver
+            self.env["download_version"] = prod_ver[0]
         else:
             return ProcessorError("Unable to extract 'download_version'")
 

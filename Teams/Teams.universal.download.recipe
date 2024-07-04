@@ -8,10 +8,6 @@
     <string>com.github.itrc-canada.download.universal.msteams</string>
     <key>Input</key>
     <dict>
-        <key>CHANNEL</key>
-        <string>Stable</string>
-        <key>LINKID</key>
-        <string>869428</string>
     </dict>
     <key>MinimumVersion</key>
     <string>2.3</string>
